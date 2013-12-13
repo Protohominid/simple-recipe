@@ -1,7 +1,7 @@
 <?php 
 /*
 Plugin Name: Simple Recipe
-Plugin URI: http://www.shawnbeelman.com
+Plugin URI: https://github.com/Protohominid/simple-recipe/archive/master.zip
 Description: Creates the "Recipe" post type and shortcode to insert into posts.
 Author: Shawn Beelman
 Version: 0.1
