@@ -1,9 +1,6 @@
-simple-recipe
-=============
-
 ##Simple Recipe plugin for Wordpress
 
-Existing recipe plugins were overkill for what I needed, so I created this. It's meant more for developers than end users.
+Existing recipe plugins were overkill for what I needed, so I created this. It's meant more for theme developers than end users, because it doesn't include any front-end CSS.
 
 Goals:
 
@@ -14,14 +11,22 @@ Goals:
 
 The plugin adds a "Recipe" custom post type and the "simple_recipe" shortcode.
 
-The shortcode only accepts one parameter right now, a recipe slug, like so:
+The plugin outputs clean, unstlyed, semantic HTML so it is up to the theme to create the look. I've added classes where appropriate to hook into for CSS.
+
+##Shortcode usage notes
+
+The shortcode only accepts one parameter right now, the title as a recipe slug, like so:
 
     [simple_recipe title="coconut-cinnamon-crumble"]
 
-The plugin outputs clean, unstlyed, semantic HTML so it is up to the dev to create the look. I've added classes where appropriate to hook into for CSS.
+##Recipe CPT notes
+
+Recipe ingredients need to be entered as an unordered list.
+Recipe instructions should be entered as an ordered list.
 
 To do:
-I'd like to create an easy way to insert the shortcode with the slug automatically. For now you have to know the recipe's slug and the shortcode format and type it in manually.
-More recipe details would also be good, like nutrition info.
+- I'd like to create an easy way to insert the shortcode with the slug automatically. For now you have to know the recipe's slug and the shortcode format and type it in manually
+- More recipe details would also be good, like nutrition info
+- Maybe an option to include the recipe thumbnail
 
 Thanks to jaredatch for the [Custom Metaboxes code](https://github.com/jaredatch/Custom-Metaboxes-and-Fields-for-WordPress).
