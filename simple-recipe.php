@@ -159,77 +159,10 @@ function initialize_cmb_meta_boxes() {
 
 
 
-/*
-//Add Meta boxes 'manually'
-add_action( 'add_meta_boxes', 'sr_meta_boxes' );
-function sr_meta_boxes() {
-    add_meta_box(
-	    'simple_recipe_meta_box',
-        __( 'Recipe Details', 'simple-recipe-textdomain' ),
-        'display_simple_recipe_meta_box',
-        'recipes', 'normal', 'high'
-    );
-}
-
-function display_simple_recipe_meta_box( $post ) {
-	wp_nonce_field( basename( __FILE__ ), 'simple_recipe_nonce' );
-	$simple_recipe_stored_meta = get_post_meta( $post->ID );
-	?>
-	
-	<p>
-		<label for="simple-recipe-ptime" class="simple-recipe-row-title">
-			<?php _e( 'Prep Time', 'simple-recipe-textdomain' )?>
-		</label><br>
-		<input type="text" name="simple-recipe-ptime" id="simple-recipe-ptime" value="<?php if ( isset ( $simple_recipe_stored_meta['simple-recipe-ptime'] ) ) echo $simple_recipe_stored_meta['simple-recipe-ptime'][0]; ?>" size="3" maxlength="4" />
-	</p>
-	<p>
-		<label for="simple-recipe-ctime" class="simple-recipe-row-title">
-			<?php _e( 'Cook Time', 'simple-recipe-textdomain' )?>
-		</label><br>
-		<input type="text" name="simple-recipe-ctime" id="simple-recipe-ctime" value="<?php if ( isset ( $simple_recipe_stored_meta['simple-recipe-ctime'] ) ) echo $simple_recipe_stored_meta['simple-recipe-ctime'][0]; ?>" size="3" maxlength="4" />
-	</p>
-	<div class="customEditor">
-		<label for="simple-recipe-ingredients" class="simple-recipe-row-title">
-			<?php _e( 'Ingredients', 'simple-recipe-textdomain' )?>
-		</label><br>
-		<textarea name="simple-recipe-ingredients"><?php if ( isset ( $simple_recipe_stored_meta['simple-recipe-ingredients'] ) ) echo $simple_recipe_stored_meta['simple-recipe-ingredients'][0]; ?></textarea>
-	</div>
-	<?php	
-}
-
-function simple_recipe_meta_save( $post_id ) {
-	
-	// Checks save status
-	$is_autosave = wp_is_post_autosave( $post_id );
-	$is_revision = wp_is_post_revision( $post_id );
-	$is_valid_nonce = ( isset( $_POST[ 'simple_recipe_nonce' ] ) && wp_verify_nonce( $_POST[ 'simple_recipe_nonce' ], basename( __FILE__ ) ) ) ? 'true' : 'false';
-	
-	// Exits script depending on save status
-	if ( $is_autosave || $is_revision || !$is_valid_nonce ) {
-		return;
-	}
-	
-	// Checks for input and sanitizes/saves if needed
-	if( isset( $_POST[ 'simple-recipe-ptime' ] ) ) {
-		update_post_meta( $post_id, 'simple-recipe-ptime', sanitize_text_field( $_POST[ 'simple-recipe-ptime' ] ) );
-	}
-	if( isset( $_POST[ 'simple-recipe-ctime' ] ) ) {
-		update_post_meta( $post_id, 'simple-recipe-ctime', sanitize_text_field( $_POST[ 'simple-recipe-ctime' ] ) );
-	}
-	if( isset( $_POST[ 'simple-recipe-ingredients' ] ) ) {
-		update_post_meta( $post_id, 'simple-recipe-ingredients', sanitize_text_field( $_POST[ 'simple-recipe-ingredients' ] ) );
-	}
-	
-}
-add_action( 'save_post', 'simple_recipe_meta_save' );
-*/
-
-
-
 // The Recipe Shortcode
 function simple_recipe_shortcode( $atts ) {
 	global $textdomain;
-	extract( shortcode_atts( array( 'title' => '' ), $atts ) );
+	extract( shortcode_atts( array( 'title' => '', 'show_thumb' => false ), $atts ) );
 	
 	$args = array( 'post_type'=>'recipes', 'name'=>$title, 'post_status'=>'publish', 'numberposts'=>1 );
 	$posts = new WP_Query( $args );
@@ -238,8 +171,8 @@ function simple_recipe_shortcode( $atts ) {
 		
 		// Set up variables with content
 		$pid = get_the_ID();
-		$title = get_the_title();
-		//$thumb = wp_get_attachment_image_src( get_post_thumbnail_id($pid), 'thumbnail' );
+		$recipe_title = get_the_title();
+		$recipe_thumb = wp_get_attachment_image_src( get_post_thumbnail_id($pid), 'thumbnail' );
 		$ingredients = get_post_meta( $pid, 'simple-recipe-ingredients', true );
 		$ingredients = str_replace( array( '<li>', '</li>' ), array( '<li><span itemprop="ingredients">', '</span></li>' ), $ingredients);
 		$instructions = get_post_meta( $pid, 'simple-recipe-instructions', true );
@@ -250,14 +183,12 @@ function simple_recipe_shortcode( $atts ) {
  
 		// Build markup
 		$html  = '<meta property="og:site_name" content="' . get_bloginfo( 'name' ) . '" />';
-		$html .= '<div itemscope itemtype="http://schema.org/Recipe" class="simple-recipe recipe">';
-		/*
-		if ( '' != $thumb ) :
-					$html .= '<img itemprop="image" src="' . $thumb[0] . '" />';
-				endif;
-		*/
+		$html .= '<div itemscope itemtype="http://schema.org/Recipe" class="simple-recipe">';
+		if ( '' != $recipe_thumb && $show_thumb ) {
+			$html .= '<img itemprop="image" src="' . $thumb[0] . '" />';
+		}
 		$html .= '<meta itemprop="url" content="' . get_permalink() . '" />';
-		$html .= '<header><h2 itemprop="name" class="sr-title">' . $title . '</h2>';
+		$html .= '<header><h2 itemprop="name" class="sr-title">' . $recipe_title . '</h2>';
 		$html .= '<p itemprop="author" class="sr-author">By ' . get_bloginfo( 'name' ) . '</p>';
 		$html .= '<span class="recipe-meta">';
 		
@@ -279,7 +210,7 @@ function simple_recipe_shortcode( $atts ) {
 		
 		if ( '' != $notes ) $html .= '<h4>' . __( 'Notes', $textdomain ) . '</h4><div class="sr-notes">' . $notes . '</div>';
 		
-		$html .= '</div><!-- end .recipe -->';
+		$html .= '</div><!-- end .simple-recipe -->';
 		
 		return $html;
 
