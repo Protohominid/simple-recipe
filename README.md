@@ -15,7 +15,7 @@ The plugin outputs clean, unstyled, semantic HTML so it is up to the theme to cr
 
 ###Shortcode usage notes
 
-The shortcode has one required ('title') and one optional ('show_thumb') parameter right now, like so:
+The shortcode has one required ('title') and one optional ('show_thumb', default is false) parameter right now, like so:
 
     [simple_recipe title="coconut-cinnamon-crumble" show_thumb=true]
 
