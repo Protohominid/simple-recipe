@@ -1,7 +1,7 @@
 <?php 
 /*
 Plugin Name: Simple Recipe
-Plugin URI: https://github.com/Protohominid/simple-recipe/archive/master.zip
+Plugin URI: https://github.com/Protohominid/simple-recipe
 Description: Creates the "Recipe" post type and shortcode to insert into posts.
 Author: Shawn Beelman
 Version: 0.1
@@ -185,7 +185,7 @@ function simple_recipe_shortcode( $atts ) {
 		$html  = '<meta property="og:site_name" content="' . get_bloginfo( 'name' ) . '" />';
 		$html .= '<div itemscope itemtype="http://schema.org/Recipe" class="simple-recipe">';
 		if ( '' != $recipe_thumb && $show_thumb ) {
-			$html .= '<img itemprop="image" src="' . $thumb[0] . '" />';
+			$html .= '<img itemprop="image" src="' . $recipe_thumb[0] . '" />';
 		}
 		$html .= '<meta itemprop="url" content="' . get_permalink() . '" />';
 		$html .= '<header><h2 itemprop="name" class="sr-title">' . $recipe_title . '</h2>';
