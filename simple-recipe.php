@@ -184,7 +184,7 @@ function simple_recipe_shortcode( $atts ) {
 		// Build markup
 		$html  = '<meta property="og:site_name" content="' . get_bloginfo( 'name' ) . '" />';
 		$html .= '<div itemscope itemtype="http://schema.org/Recipe" class="simple-recipe">';
-		if ( '' != $recipe_thumb && $show_thumb ) {
+		if ( !empty( $recipe_thumb ) && $show_thumb ) {
 			$html .= '<img itemprop="image" src="' . $recipe_thumb[0] . '" />';
 		}
 		$html .= '<meta itemprop="url" content="' . get_permalink() . '" />';
@@ -192,13 +192,13 @@ function simple_recipe_shortcode( $atts ) {
 		$html .= '<p itemprop="author" class="sr-author">By ' . get_bloginfo( 'name' ) . '</p>';
 		$html .= '<span class="recipe-meta">';
 		
-		if ( '' != $ptime ) {
+		if ( !empty( $ptime ) ) {
 			$html .= '<p class="recipe-meta-item sr-preptime">' . __( 'Prep Time:', $textdomain ) . ' <meta itemprop="prepTime" content="PT' . $ptime . 'M">' . $ptime . ' minutes</p>';
 		}
-		if ( '' != $ctime ) {
+		if ( !empty ( $ctime ) ) {
 			$html .= '<p class="recipe-meta-item sr-cooktime">' . __( 'Cook Time:', $textdomain ) . ' <meta itemprop="cookTime" content="PT' . $ctime . 'M">' . $ctime . ' minutes</p>';
 		}
-		if ( '' != $yield ) {
+		if ( !empty ( $yield ) ) {
 			$html .= '<p class="recipe-meta-item sr-yield">' . __( 'Yield:', $textdomain ) . ' <span itemprop="recipeYield">' . $yield . '</span></p>';
 		}
 		
@@ -208,7 +208,7 @@ function simple_recipe_shortcode( $atts ) {
 		$html .= '<h4>' . __( 'Instructions', $textdomain ) . '</h4>';
 		$html .= '<div class="sr-instructions"><span itemprop="recipeInstructions">' . $instructions . '</span></div>';
 		
-		if ( '' != $notes ) $html .= '<h4>' . __( 'Notes', $textdomain ) . '</h4><div class="sr-notes">' . $notes . '</div>';
+		if ( !empty ( $notes ) ) $html .= '<h4>' . __( 'Notes', $textdomain ) . '</h4><div class="sr-notes">' . $notes . '</div>';
 		
 		$html .= '</div><!-- end .simple-recipe -->';
 		
