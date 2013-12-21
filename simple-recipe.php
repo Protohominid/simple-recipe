@@ -18,16 +18,16 @@ add_action( 'init', 'create_simple_recipe_cpt' );
 function create_simple_recipe_cpt() {
 	global $textdomain;
 	$labels = array(
-		'name' => 				__( 'Recipes', $textdomain ),
-		'singular_name' =>		__( 'Recipe', $textdomain ),
-		'add_new' =>			__( 'Add New', $textdomain ),
-		'add_new_item' =>		__( 'Add New Recipe', $textdomain ),
-		'edit_item' =>			__( 'Edit Recipe', $textdomain ),
-		'new_item' =>			__( 'New Recipe', $textdomain ),
-		'all_items' =>			__( 'All Recipes', $textdomain ),
-		'view_item' =>			__( 'View Recipe', $textdomain ),
-		'search_items' =>		__( 'Search Recipes', $textdomain ),
-		'not_found' =>			__( 'No recipes found', $textdomain ),
+		'name' => 		__( 'Recipes', $textdomain ),
+		'singular_name' =>	__( 'Recipe', $textdomain ),
+		'add_new' =>		__( 'Add New', $textdomain ),
+		'add_new_item' =>	__( 'Add New Recipe', $textdomain ),
+		'edit_item' =>		__( 'Edit Recipe', $textdomain ),
+		'new_item' =>		__( 'New Recipe', $textdomain ),
+		'all_items' =>		__( 'All Recipes', $textdomain ),
+		'view_item' =>		__( 'View Recipe', $textdomain ),
+		'search_items' =>	__( 'Search Recipes', $textdomain ),
+		'not_found' =>		__( 'No recipes found', $textdomain ),
 		'not_found_in_trash' => __( 'No recipes found in the Trash', $textdomain ), 
 	);
 	$args = array(
