@@ -160,64 +160,75 @@ function initialize_cmb_meta_boxes() {
 
 
 // The Recipe Shortcode
+add_shortcode( 'simple_recipe', 'simple_recipe_shortcode' );
 function simple_recipe_shortcode( $atts ) {
 	global $textdomain;
 	extract( shortcode_atts( array( 'title' => '', 'show_thumb' => false ), $atts ) );
 	
-	$args = array( 'post_type'=>'recipes', 'name'=>$title, 'post_status'=>'publish', 'numberposts'=>1 );
-	$posts = new WP_Query( $args );
+	global $post;
 	
-	if ( $posts->have_posts() ) : $posts->the_post();
-		
-		// Set up variables with content
-		$pid = get_the_ID();
-		$recipe_title = get_the_title();
-		$recipe_thumb = wp_get_attachment_image_src( get_post_thumbnail_id($pid), 'thumbnail' );
-		$ingredients = get_post_meta( $pid, 'simple-recipe-ingredients', true );
-		$ingredients = str_replace( array( '<li>', '</li>' ), array( '<li><span itemprop="ingredients">', '</span></li>' ), $ingredients);
-		$instructions = get_post_meta( $pid, 'simple-recipe-instructions', true );
-		$yield = get_post_meta( $pid, 'simple-recipe-yield', true );
-		$ptime = get_post_meta( $pid, 'simple-recipe-ptime', true );
-		$ctime = get_post_meta( $pid, 'simple-recipe-ctime', true );
-		$notes = get_post_meta( $pid, 'simple-recipe-notes', true );
- 
-		// Build markup
-		$html  = '<meta property="og:site_name" content="' . get_bloginfo( 'name' ) . '" />';
-		$html .= '<div itemscope itemtype="http://schema.org/Recipe" class="simple-recipe">';
-		if ( !empty( $recipe_thumb ) && $show_thumb ) {
-			$html .= '<img itemprop="image" src="' . $recipe_thumb[0] . '" />';
-		}
-		$html .= '<meta itemprop="url" content="' . get_permalink() . '" />';
-		$html .= '<header><h2 itemprop="name" class="sr-title">' . $recipe_title . '</h2>';
-		$html .= '<p itemprop="author" class="sr-author">By ' . get_bloginfo( 'name' ) . '</p>';
-		$html .= '<span class="recipe-meta">';
-		
-		if ( !empty( $ptime ) ) {
-			$html .= '<p class="recipe-meta-item sr-preptime">' . __( 'Prep Time:', $textdomain ) . ' <meta itemprop="prepTime" content="PT' . $ptime . 'M">' . $ptime . ' minutes</p>';
-		}
-		if ( !empty ( $ctime ) ) {
-			$html .= '<p class="recipe-meta-item sr-cooktime">' . __( 'Cook Time:', $textdomain ) . ' <meta itemprop="cookTime" content="PT' . $ctime . 'M">' . $ctime . ' minutes</p>';
-		}
-		if ( !empty ( $yield ) ) {
-			$html .= '<p class="recipe-meta-item sr-yield">' . __( 'Yield:', $textdomain ) . ' <span itemprop="recipeYield">' . $yield . '</span></p>';
-		}
-		
-		$html .= '</span></header>';
-		$html .= '<h4>' . __( 'Ingredients', $textdomain ) . '</h4>';
-		$html .= '<div class="sr-ingredients">' . $ingredients . '</div>';
-		$html .= '<h4>' . __( 'Instructions', $textdomain ) . '</h4>';
-		$html .= '<div class="sr-instructions"><span itemprop="recipeInstructions">' . $instructions . '</span></div>';
-		
-		if ( !empty ( $notes ) ) $html .= '<h4>' . __( 'Notes', $textdomain ) . '</h4><div class="sr-notes">' . $notes . '</div>';
-		
-		$html .= '</div><!-- end .simple-recipe -->';
-		
-		return $html;
+	$args = array( 'post_type'=>'recipes', 'name'=>$title, 'post_status'=>'publish', 'numberposts'=>1 );
+	$recipes = new WP_Query( $args );
+	
+	$html = '';
+	
+	if ( $recipes->have_posts() ) : 
+		while ( $recipes->have_posts() ) :
 
+			$recipes->the_post();
+		
+			// Set up variables with content
+			$pid = get_the_ID();
+			$recipe_title = get_the_title();
+			$recipe_thumb = wp_get_attachment_image_src( get_post_thumbnail_id($pid), 'thumbnail' );
+			$ingredients = get_post_meta( $pid, 'simple-recipe-ingredients', true );
+			$ingredients = str_replace( array( '<li>', '</li>' ), array( '<li><span itemprop="ingredients">', '</span></li>' ), $ingredients);
+			$instructions = get_post_meta( $pid, 'simple-recipe-instructions', true );
+			$yield = get_post_meta( $pid, 'simple-recipe-yield', true );
+			$ptime = get_post_meta( $pid, 'simple-recipe-ptime', true );
+			$ctime = get_post_meta( $pid, 'simple-recipe-ctime', true );
+			$notes = get_post_meta( $pid, 'simple-recipe-notes', true );
+	 
+			// Build markup
+			$html  = '<meta property="og:site_name" content="' . get_bloginfo( 'name' ) . '" />';
+			$html .= '<div itemscope itemtype="http://schema.org/Recipe" class="simple-recipe">';
+			if ( !empty( $recipe_thumb ) && $show_thumb ) {
+				$html .= '<img itemprop="image" src="' . $recipe_thumb[0] . '" />';
+			}
+			$html .= '<meta itemprop="url" content="' . get_permalink() . '" />';
+			$html .= '<header><h2 itemprop="name" class="sr-title">' . $recipe_title . '</h2>';
+			$html .= '<p itemprop="author" class="sr-author">By ' . get_bloginfo( 'name' ) . '</p>';
+			$html .= '<span class="recipe-meta">';
+			
+			if ( !empty( $ptime ) ) {
+				$html .= '<p class="recipe-meta-item sr-preptime">' . __( 'Prep Time:', $textdomain ) . ' <meta itemprop="prepTime" content="PT' . $ptime . 'M">' . $ptime . ' minutes</p>';
+			}
+			if ( !empty ( $ctime ) ) {
+				$html .= '<p class="recipe-meta-item sr-cooktime">' . __( 'Cook Time:', $textdomain ) . ' <meta itemprop="cookTime" content="PT' . $ctime . 'M">' . $ctime . ' minutes</p>';
+			}
+			if ( !empty ( $yield ) ) {
+				$html .= '<p class="recipe-meta-item sr-yield">' . __( 'Yield:', $textdomain ) . ' <span itemprop="recipeYield">' . $yield . '</span></p>';
+			}
+			
+			$html .= '</span></header>';
+			$html .= '<h4>' . __( 'Ingredients', $textdomain ) . '</h4>';
+			$html .= '<div class="sr-ingredients">' . $ingredients . '</div>';
+			$html .= '<h4>' . __( 'Instructions', $textdomain ) . '</h4>';
+			$html .= '<div class="sr-instructions"><span itemprop="recipeInstructions">' . $instructions . '</span></div>';
+			
+			if ( !empty ( $notes ) ) $html .= '<h4>' . __( 'Notes', $textdomain ) . '</h4><div class="sr-notes">' . $notes . '</div>';
+			
+			$html .= '</div><!-- end .simple-recipe -->';
+			
+
+		endwhile;
+	else :
+		return;
+		
 	endif;
-	wp_reset_postdata();
+	wp_reset_query();
+	return $html;
 }
-add_shortcode( 'simple_recipe', 'simple_recipe_shortcode' );
 
 /* schema todo
 <div itemprop="nutrition"
