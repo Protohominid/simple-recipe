@@ -4,7 +4,7 @@ Plugin Name: Simple Recipe
 Plugin URI: https://github.com/Protohominid/simple-recipe
 Description: Creates the "Recipe" post type and shortcode to insert into posts.
 Author: Shawn Beelman
-Version: 0.1
+Version: 0.2
 Author URI: http://www.shawnbeelman.com
 License: GPLv2
 Text Domain: simple-recipe
@@ -173,6 +173,7 @@ function simple_recipe_shortcode( $atts ) {
 	$html = '';
 	
 	if ( $recipes->have_posts() ) : 
+	
 		while ( $recipes->have_posts() ) :
 
 			$recipes->the_post();
@@ -219,14 +220,17 @@ function simple_recipe_shortcode( $atts ) {
 			if ( !empty ( $notes ) ) $html .= '<h4>' . __( 'Notes', $textdomain ) . '</h4><div class="sr-notes">' . $notes . '</div>';
 			
 			$html .= '</div><!-- end .simple-recipe -->';
-			
 
 		endwhile;
+		
 	else :
+	
 		return;
 		
 	endif;
+	
 	wp_reset_query();
+	
 	return $html;
 }
 
