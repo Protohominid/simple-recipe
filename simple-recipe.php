@@ -256,4 +256,17 @@ function simple_recipe_shortcode( $atts ) {
 <span itemprop="description"></span>
 */
 
+
+// Show the recipe on the single recipe page (e.g. site.com/recipes/recipename/)
+// this is needed for the microdata URL meta tag in the recipe shortcode
+add_filter( 'the_content', 'show_simple_recipe' );
+function show_simple_recipe( $content ) { 
+
+    if ( is_singular('recipes') ) {
+        $content = do_shortcode( '[simple_recipe rid="' . get_the_id() . '"]' );
+	}
+
+    return $content;
+}
+
 // eof
