@@ -163,11 +163,22 @@ function initialize_cmb_meta_boxes() {
 add_shortcode( 'simple_recipe', 'simple_recipe_shortcode' );
 function simple_recipe_shortcode( $atts ) {
 	global $textdomain;
-	extract( shortcode_atts( array( 'title' => '', 'show_thumb' => false ), $atts ) );
+	extract( shortcode_atts( array( 'title' => '', 'rid' => null, 'show_thumb' => false ), $atts ) );
 	
 	global $post;
 	
-	$args = array( 'post_type'=>'recipes', 'name'=>$title, 'post_status'=>'publish', 'numberposts'=>1 );
+		
+	$args = array(
+		'post_type'		=>	'recipes',
+		'post_status'	=>	'publish',
+		'numberposts'	=>	1
+	);
+	if ( !empty($rid) ) :
+		$args['p'] = $rid;
+	else :
+		$args['name'] = $title;
+	endif;
+	
 	$recipes = new WP_Query( $args );
 	
 	$html = '';
@@ -196,7 +207,7 @@ function simple_recipe_shortcode( $atts ) {
 			if ( !empty( $recipe_thumb ) && $show_thumb ) {
 				$html .= '<img itemprop="image" src="' . $recipe_thumb[0] . '" />';
 			}
-			$html .= '<meta itemprop="url" content="' . get_permalink() . '" />';
+			$html .= '<meta itemprop="url" content="' . get_permalink($post->post_parent) . '" />';
 			$html .= '<header><h2 itemprop="name" class="sr-title">' . $recipe_title . '</h2>';
 			$html .= '<p itemprop="author" class="sr-author">By ' . get_bloginfo( 'name' ) . '</p>';
 			$html .= '<span class="recipe-meta">';
