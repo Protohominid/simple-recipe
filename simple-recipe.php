@@ -205,7 +205,7 @@ function simple_recipe_shortcode( $atts ) {
 			$html  = '<meta property="og:site_name" content="' . get_bloginfo( 'name' ) . '" />';
 			$html .= '<div itemscope itemtype="http://schema.org/Recipe" class="simple-recipe">';
 			if ( !empty( $recipe_thumb ) ) {
-				$html .= '<img class="recipe-thumb" itemprop="photo" src="' . $recipe_thumb[0] . '" />';
+				$html .= '<img itemprop="image" class="recipe-thumb" src="' . $recipe_thumb[0] . '" />';
 			}
 			$html .= '<meta itemprop="url" content="' . get_permalink($post->post_parent) . '" />';
 			$html .= '<header><h2 itemprop="name" class="sr-title">' . $recipe_title . '</h2>';
