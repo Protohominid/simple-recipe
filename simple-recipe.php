@@ -192,7 +192,7 @@ function simple_recipe_shortcode( $atts ) {
 			// Set up variables with content
 			$pid = get_the_ID();
 			$recipe_title = get_the_title();
-			$recipe_thumb = wp_get_attachment_image_src( get_post_thumbnail_id($pid), 'thumbnail' );
+			$recipe_thumb = wp_get_attachment_image_src( get_post_thumbnail_id($pid), 'medium' );
 			$ingredients = get_post_meta( $pid, 'simple-recipe-ingredients', true );
 			$ingredients = str_replace( array( '<li>', '</li>' ), array( '<li><span itemprop="ingredients">', '</span></li>' ), $ingredients);
 			$instructions = get_post_meta( $pid, 'simple-recipe-instructions', true );
