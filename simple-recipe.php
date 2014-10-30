@@ -4,7 +4,7 @@ Plugin Name: Simple Recipe
 Plugin URI: https://github.com/Protohominid/simple-recipe
 Description: Creates the "Recipe" post type and shortcode to insert into posts.
 Author: Shawn Beelman
-Version: 0.2
+Version: 0.3
 Author URI: http://www.shawnbeelman.com
 License: GPLv2
 Text Domain: simple-recipe
@@ -204,8 +204,8 @@ function simple_recipe_shortcode( $atts ) {
 			// Build markup
 			$html  = '<meta property="og:site_name" content="' . get_bloginfo( 'name' ) . '" />';
 			$html .= '<div itemscope itemtype="http://schema.org/Recipe" class="simple-recipe">';
-			if ( !empty( $recipe_thumb ) && $show_thumb ) {
-				$html .= '<img itemprop="image" src="' . $recipe_thumb[0] . '" />';
+			if ( !empty( $recipe_thumb ) ) {
+				$html .= '<img class="recipe-thumb" itemprop="photo" src="' . $recipe_thumb[0] . '" />';
 			}
 			$html .= '<meta itemprop="url" content="' . get_permalink($post->post_parent) . '" />';
 			$html .= '<header><h2 itemprop="name" class="sr-title">' . $recipe_title . '</h2>';
@@ -223,12 +223,12 @@ function simple_recipe_shortcode( $atts ) {
 			}
 			
 			$html .= '</span></header>';
-			$html .= '<h4>' . __( 'Ingredients', $textdomain ) . '</h4>';
+			$html .= '<h3>' . __( 'Ingredients', $textdomain ) . '</h3>';
 			$html .= '<div class="sr-ingredients">' . $ingredients . '</div>';
-			$html .= '<h4>' . __( 'Instructions', $textdomain ) . '</h4>';
+			$html .= '<h3>' . __( 'Instructions', $textdomain ) . '</h3>';
 			$html .= '<div class="sr-instructions"><span itemprop="recipeInstructions">' . $instructions . '</span></div>';
 			
-			if ( !empty ( $notes ) ) $html .= '<h4>' . __( 'Notes', $textdomain ) . '</h4><div class="sr-notes">' . $notes . '</div>';
+			if ( !empty ( $notes ) ) $html .= '<h3>' . __( 'Notes', $textdomain ) . '</h3><div class="sr-notes">' . $notes . '</div>';
 			
 			$html .= '</div><!-- end .simple-recipe -->';
 
