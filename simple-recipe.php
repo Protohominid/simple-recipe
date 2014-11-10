@@ -203,7 +203,7 @@ function simple_recipe_shortcode( $atts ) {
 	 
 			// Build markup
 			$html  = '<meta property="og:site_name" content="' . get_bloginfo( 'name' ) . '" />';
-			$html .= '<div itemscope itemtype="http://schema.org/Recipe" class="simple-recipe">';
+			$html .= '<div itemscope itemtype="http://schema.org/Recipe" class="simple-recipe row">';
 			if ( !empty( $recipe_thumb ) ) {
 				$html .= '<img itemprop="image" class="recipe-thumb" src="' . $recipe_thumb[0] . '" />';
 			}
@@ -223,10 +223,15 @@ function simple_recipe_shortcode( $atts ) {
 			}
 			
 			$html .= '</span></header>';
+			$html .= '<div class="sr-ingredients-wrap">';
 			$html .= '<h3>' . __( 'Ingredients', $textdomain ) . '</h3>';
 			$html .= '<div class="sr-ingredients">' . $ingredients . '</div>';
+			$html .= '</div>';
+			
+			$html .= '<div class="sr-instructions-wrap">';
 			$html .= '<h3>' . __( 'Instructions', $textdomain ) . '</h3>';
 			$html .= '<div class="sr-instructions"><span itemprop="recipeInstructions">' . $instructions . '</span></div>';
+			$html .= '</div>';
 			
 			if ( !empty ( $notes ) ) $html .= '<h3>' . __( 'Notes', $textdomain ) . '</h3><div class="sr-notes">' . $notes . '</div>';
 			
