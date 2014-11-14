@@ -4,13 +4,19 @@ Plugin Name: Simple Recipe
 Plugin URI: https://github.com/Protohominid/simple-recipe
 Description: Creates the "Recipe" post type and shortcode to insert into posts.
 Author: Shawn Beelman
-Version: 0.3
+Version: 0.4
 Author URI: http://www.shawnbeelman.com
 License: GPLv2
 Text Domain: simple-recipe
 */
 // text domain for I18n (should be same as plugin slug):
 $textdomain = 'simple-recipe';
+
+add_action( 'wp_enqueue_scripts', 'sr_enqueue_scripts' );
+function sr_enqueue_scripts() {
+	wp_register_script( 'simple-recipe', WP_PLUGIN_URL . '/simple-recipe/simple-recipe-min.js', array ('jquery'), '', true );
+	wp_enqueue_script( 'simple-recipe' );
+}
 
 
 //Register Recipe Custom Post Type 
@@ -203,12 +209,12 @@ function simple_recipe_shortcode( $atts ) {
 	 
 			// Build markup
 			$html  = '<meta property="og:site_name" content="' . get_bloginfo( 'name' ) . '" />';
-			$html .= '<div itemscope itemtype="http://schema.org/Recipe" class="simple-recipe row">';
+			$html .= '<div itemscope itemtype="http://schema.org/Recipe" class="simple-recipe">';
 			if ( !empty( $recipe_thumb ) ) {
 				$html .= '<img itemprop="image" class="recipe-thumb" src="' . $recipe_thumb[0] . '" />';
 			}
 			$html .= '<meta itemprop="url" content="' . get_permalink($post->post_parent) . '" />';
-			$html .= '<header><h2 itemprop="name" class="sr-title">' . $recipe_title . '</h2>';
+			$html .= '<header class="row"><h2 itemprop="name" class="sr-title">' . $recipe_title . '</h2>';
 			$html .= '<p itemprop="author" class="sr-author">By ' . get_bloginfo( 'name' ) . '</p>';
 			$html .= '<span class="recipe-meta">';
 			
@@ -222,7 +228,9 @@ function simple_recipe_shortcode( $atts ) {
 				$html .= '<p class="recipe-meta-item sr-yield">' . __( 'Yield:', $textdomain ) . ' <span itemprop="recipeYield">' . $yield . '</span></p>';
 			}
 			
+			$html .= '<button class="sr-print-recipe"><span>Print</span></button>';
 			$html .= '</span></header>';
+			$html .= '<div class="sr-content row">';
 			$html .= '<div class="sr-ingredients-wrap">';
 			$html .= '<h3>' . __( 'Ingredients', $textdomain ) . '</h3>';
 			$html .= '<div class="sr-ingredients">' . $ingredients . '</div>';
@@ -231,7 +239,7 @@ function simple_recipe_shortcode( $atts ) {
 			$html .= '<div class="sr-instructions-wrap">';
 			$html .= '<h3>' . __( 'Instructions', $textdomain ) . '</h3>';
 			$html .= '<div class="sr-instructions"><span itemprop="recipeInstructions">' . $instructions . '</span></div>';
-			$html .= '</div>';
+			$html .= '</div></div>';
 			
 			if ( !empty ( $notes ) ) $html .= '<h3>' . __( 'Notes', $textdomain ) . '</h3><div class="sr-notes">' . $notes . '</div>';
 			
