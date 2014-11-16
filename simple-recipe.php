@@ -4,19 +4,13 @@ Plugin Name: Simple Recipe
 Plugin URI: https://github.com/Protohominid/simple-recipe
 Description: Creates the "Recipe" post type and shortcode to insert into posts.
 Author: Shawn Beelman
-Version: 0.4
-Author URI: http://www.shawnbeelman.com
+Version: 0.5
+Author URI: http://www.sbgraphicdesign.com
 License: GPLv2
 Text Domain: simple-recipe
 */
 // text domain for I18n (should be same as plugin slug):
 $textdomain = 'simple-recipe';
-
-add_action( 'wp_enqueue_scripts', 'sr_enqueue_scripts' );
-function sr_enqueue_scripts() {
-	wp_register_script( 'simple-recipe', WP_PLUGIN_URL . '/simple-recipe/simple-recipe-min.js', array ('jquery'), '', true );
-	wp_enqueue_script( 'simple-recipe' );
-}
 
 
 //Register Recipe Custom Post Type 
@@ -24,16 +18,16 @@ add_action( 'init', 'create_simple_recipe_cpt' );
 function create_simple_recipe_cpt() {
 	global $textdomain;
 	$labels = array(
-		'name' => 		__( 'Recipes', $textdomain ),
-		'singular_name' =>	__( 'Recipe', $textdomain ),
-		'add_new' =>		__( 'Add New', $textdomain ),
-		'add_new_item' =>	__( 'Add New Recipe', $textdomain ),
-		'edit_item' =>		__( 'Edit Recipe', $textdomain ),
-		'new_item' =>		__( 'New Recipe', $textdomain ),
-		'all_items' =>		__( 'All Recipes', $textdomain ),
-		'view_item' =>		__( 'View Recipe', $textdomain ),
-		'search_items' =>	__( 'Search Recipes', $textdomain ),
-		'not_found' =>		__( 'No recipes found', $textdomain ),
+		'name' => 				__( 'Recipes', $textdomain ),
+		'singular_name' =>		__( 'Recipe', $textdomain ),
+		'add_new' =>			__( 'Add New', $textdomain ),
+		'add_new_item' =>		__( 'Add New Recipe', $textdomain ),
+		'edit_item' =>			__( 'Edit Recipe', $textdomain ),
+		'new_item' =>			__( 'New Recipe', $textdomain ),
+		'all_items' =>			__( 'All Recipes', $textdomain ),
+		'view_item' =>			__( 'View Recipe', $textdomain ),
+		'search_items' =>		__( 'Search Recipes', $textdomain ),
+		'not_found' =>			__( 'No recipes found', $textdomain ),
 		'not_found_in_trash' => __( 'No recipes found in the Trash', $textdomain ), 
 	);
 	$args = array(
@@ -150,6 +144,13 @@ function simple_recipe_metaboxes( $meta_boxes ) {
 					'textarea_rows' => 15
 				)
 			),
+			array(
+				'name' => __( 'Notes', $textdomain ),
+				'desc' => __( '(optional)', $textdomain ),
+				'id' => $prefix . 'notes',
+				'type' => 'textarea'
+			),
+
 		),
 	);
 	return $meta_boxes;
@@ -242,6 +243,7 @@ function simple_recipe_shortcode( $atts ) {
 			$html .= '</div></div>';
 			
 			if ( !empty ( $notes ) ) $html .= '<h3>' . __( 'Notes', $textdomain ) . '</h3><div class="sr-notes">' . $notes . '</div>';
+			#if ( !empty ( $nutrition ) ) $html .= '<h3>' . __( 'Nutrition Facts', $textdomain ) . '</h3><div class="sr-nutrition-info" itemprop="nutrition" itemscope itemtype="http://schema.org/NutritionInformation">' . $nutrition . '</div>';
 			
 			$html .= '</div><!-- end .simple-recipe -->';
 
@@ -259,15 +261,20 @@ function simple_recipe_shortcode( $atts ) {
 }
 
 /* schema todo
-<div itemprop="nutrition"
-	itemscope itemtype="http://schema.org/NutritionInformation">
-	Nutrition facts:
-	<span itemprop="calories">240 calories</span>,
-	<span itemprop="fatContent">9 grams fat</span>
-</div>
+<span itemprop="calories">240 calories</span>,
+<span itemprop="fatContent">9 grams fat</span>
 
 <span itemprop="description"></span>
 */
+
+add_action( 'wp_enqueue_scripts', 'sr_enqueue_scripts' );
+function sr_enqueue_scripts() {
+	global $post;
+	if( is_a( $post, 'WP_Post' ) && has_shortcode( $post->post_content, 'simple_recipe') ) {
+		wp_register_script( 'simple-recipe', WP_PLUGIN_URL . '/simple-recipe/simple-recipe-min.js', array ('jquery'), '', true );
+		wp_enqueue_script( 'simple-recipe' );
+	}
+}
 
 
 // Show the recipe on the single recipe page (e.g. site.com/recipes/recipename/)
