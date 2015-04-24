@@ -150,6 +150,18 @@ function simple_recipe_metaboxes( $meta_boxes ) {
 				'id' => $prefix . 'notes',
 				'type' => 'textarea'
 			),
+			array(
+				'name' => __( 'Instagram URL', $textdomain ),
+				'desc' => __( 'Enter a URL for the Instagram link', $textdomain ),
+				'id' => $prefix . 'instagram-url',
+				'type' => 'text'
+			),
+			array(
+				'name' => __( 'Instagram Hashtag', $textdomain ),
+				'desc' => __( 'Enter a hashtag here to show the Instagram message', $textdomain ),
+				'id' => $prefix . 'instagram-hash',
+				'type' => 'text'
+			),
 
 		),
 	);
@@ -207,6 +219,8 @@ function simple_recipe_shortcode( $atts ) {
 			$ptime = get_post_meta( $pid, 'simple-recipe-ptime', true );
 			$ctime = get_post_meta( $pid, 'simple-recipe-ctime', true );
 			$notes = get_post_meta( $pid, 'simple-recipe-notes', true );
+			$instagram_hash = get_post_meta( $pid, 'simple-recipe-instagram-hash', true );
+			$instagram_url = get_post_meta( $pid, 'simple-recipe-instagram-url', true );
 	 
 			// Build markup
 			$html  = '<meta property="og:site_name" content="' . get_bloginfo( 'name' ) . '" />';
@@ -243,8 +257,10 @@ function simple_recipe_shortcode( $atts ) {
 			$html .= '</div></div>';
 			
 			if ( !empty ( $notes ) ) $html .= '<h3>' . __( 'Notes', $textdomain ) . '</h3><div class="sr-notes">' . $notes . '</div>';
-			#if ( !empty ( $nutrition ) ) $html .= '<h3>' . __( 'Nutrition Facts', $textdomain ) . '</h3><div class="sr-nutrition-info" itemprop="nutrition" itemscope itemtype="http://schema.org/NutritionInformation">' . $nutrition . '</div>';
+			if ( !empty ( $nutrition ) ) $html .= '<h3>' . __( 'Nutrition Facts', $textdomain ) . '</h3><div class="sr-nutrition-info" itemprop="nutrition" itemscope itemtype="http://schema.org/NutritionInformation">' . $nutrition . '</div>';
 			
+			if ( !empty ( $instagram_hash ) ) $html .= '<div class="sr-instagram-message">' . esc_attr( $instagram_hash ) . '</div>';
+			if ( !empty ( $instagram_url ) ) $html .= '<a class="sr-instagram-link" href="' . esc_url( $instagram_url ) . '">Instagram</a>';
 			$html .= '</div><!-- end .simple-recipe -->';
 			$html .= '<a href="//yummly.com" rel="nofollow" class="YUMMLY-YUM-BUTTON">Yum</a><script src="https://www.yummly.com/js/widget.js?wordpress"></script>';
 
