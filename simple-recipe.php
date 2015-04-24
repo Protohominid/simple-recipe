@@ -215,18 +215,18 @@ function simple_recipe_shortcode( $atts ) {
 				$html .= '<img itemprop="image" class="recipe-thumb" src="' . $recipe_thumb[0] . '" />';
 			}
 			$html .= '<meta itemprop="url" content="' . get_permalink($post->post_parent) . '" />';
-			$html .= '<header class="row"><h2 itemprop="name" class="sr-title">' . esc_attr( $recipe_title ) . '</h2>';
+			$html .= '<header class="row"><h2 itemprop="name" class="sr-title">' . $recipe_title . '</h2>';
 			$html .= '<p itemprop="author" class="sr-author">By ' . get_bloginfo( 'name' ) . '</p>';
 			$html .= '<span class="recipe-meta">';
 			
 			if ( !empty( $ptime ) ) {
-				$html .= '<p class="recipe-meta-item sr-preptime">' . __( 'Prep Time:', $textdomain ) . ' <meta itemprop="prepTime" content="PT' .  esc_attr( $ptime ) . 'M">' . $ptime . ' minutes</p>';
+				$html .= '<p class="recipe-meta-item sr-preptime">' . __( 'Prep Time:', $textdomain ) . ' <meta itemprop="prepTime" content="PT' . $ptime . 'M">' . $ptime . ' minutes</p>';
 			}
 			if ( !empty ( $ctime ) ) {
-				$html .= '<p class="recipe-meta-item sr-cooktime">' . __( 'Cook Time:', $textdomain ) . ' <meta itemprop="cookTime" content="PT' . esc_attr( $ctime ) . 'M">' . $ctime . ' minutes</p>';
+				$html .= '<p class="recipe-meta-item sr-cooktime">' . __( 'Cook Time:', $textdomain ) . ' <meta itemprop="cookTime" content="PT' . $ctime . 'M">' . $ctime . ' minutes</p>';
 			}
 			if ( !empty ( $yield ) ) {
-				$html .= '<p class="recipe-meta-item sr-yield">' . __( 'Yield:', $textdomain ) . ' <span itemprop="recipeYield">' . esc_attr( $yield ) . '</span></p>';
+				$html .= '<p class="recipe-meta-item sr-yield">' . __( 'Yield:', $textdomain ) . ' <span itemprop="recipeYield">' . $yield . '</span></p>';
 			}
 			
 			$html .= '<button class="sr-print-recipe"><span>Print</span></button>';
@@ -246,7 +246,6 @@ function simple_recipe_shortcode( $atts ) {
 			#if ( !empty ( $nutrition ) ) $html .= '<h3>' . __( 'Nutrition Facts', $textdomain ) . '</h3><div class="sr-nutrition-info" itemprop="nutrition" itemscope itemtype="http://schema.org/NutritionInformation">' . $nutrition . '</div>';
 			
 			$html .= '</div><!-- end .simple-recipe -->';
-			$html .= '<a href="//yummly.com" rel="nofollow" class="YUMMLY-YUM-BUTTON">Yum</a><script src="https://www.yummly.com/js/widget.js?wordpress"></script>';
 
 		endwhile;
 		
