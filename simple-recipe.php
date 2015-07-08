@@ -4,7 +4,7 @@ Plugin Name: Simple Recipe
 Plugin URI: https://github.com/Protohominid/simple-recipe
 Description: Creates the "Recipe" post type and shortcode to insert into posts.
 Author: Shawn Beelman
-Version: 0.5
+Version: 0.6.0
 Author URI: http://www.sbgraphicdesign.com
 License: GPLv2
 Text Domain: simple-recipe
@@ -12,6 +12,24 @@ Text Domain: simple-recipe
 // text domain for I18n (should be same as plugin slug):
 $textdomain = 'simple-recipe';
 
+include_once( 'updater.php' );
+
+if ( is_admin() ) {
+	$config = array(
+		'slug' => plugin_basename(__FILE__), // this is the slug of your plugin
+		'proper_folder_name' => 'simple-recipe', // this is the name of the folder your plugin lives in
+		'api_url' => 'https://api.github.com/repos/Protohominid/simple-recipe', // the GitHub API url of your GitHub repo
+		'raw_url' => 'https://raw.github.com/Protohominid/simple-recipe/master', // the GitHub raw url of your GitHub repo
+		'github_url' => 'https://github.com/Protohominid/simple-recipe', // the GitHub url of your GitHub repo
+		'zip_url' => 'https://github.com/Protohominid/simple-recipe/zipball/master', // the zip url of the GitHub repo
+		'sslverify' => true, // whether WP should check the validity of the SSL cert when getting an update, see https://github.com/jkudish/WordPress-GitHub-Plugin-Updater/issues/2 and https://github.com/jkudish/WordPress-GitHub-Plugin-Updater/issues/4 for details
+		'requires' => '3.0', // which version of WordPress does your plugin require?
+		'tested' => '3.3', // which version of WordPress is your plugin tested up to?
+		'readme' => 'README.md', // which file to use as the readme for the version number
+		'access_token' => '', // Access private repositories by authorizing under Appearance > GitHub Updates when this example plugin is installed
+	);
+	new WP_GitHub_Updater( $config );
+}
 
 //Register Recipe Custom Post Type 
 add_action( 'init', 'create_simple_recipe_cpt' );
