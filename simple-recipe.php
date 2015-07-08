@@ -4,7 +4,7 @@ Plugin Name: Simple Recipe
 Plugin URI: https://github.com/Protohominid/simple-recipe
 Description: Creates the "Recipe" post type and shortcode to insert into posts.
 Author: Shawn Beelman
-Version: 0.6.1
+Version: 0.6.2
 Author URI: http://www.sbgraphicdesign.com
 License: GPLv2
 Text Domain: simple-recipe
@@ -30,8 +30,14 @@ if ( is_admin() ) {
 	new WP_GitHub_Updater( $config );
 }
 
+
 //Register Recipe Custom Post Type 
-add_action( 'init', 'create_simple_recipe_cpt' );
+function same_post_type_warning() {
+	echo '<div class="error">
+	<p><strong>' . __( 'Warning', 'translation-domain' ) . ':</strong> ' . __( 'A post type with the name "recipes" has already been registered by another plugin or theme. This will most probably cause conflicts.', 'simple-recipe' ) . '</p>
+	</div>';		
+}
+
 function create_simple_recipe_cpt() {
 	$labels = array(
 		'name' => 				__( 'Recipes', 'simple-recipe' ),
@@ -54,6 +60,13 @@ function create_simple_recipe_cpt() {
 	);
 	register_post_type( 'recipes', $args );
 }
+
+if ( post_type_exists( 'recipes' ) ) :
+	add_action( 'admin_notices', 'same_post_type_warning' );
+else :
+	add_action( 'init', 'create_simple_recipe_cpt' );
+endif;
+
 
 
 //Custom messages
