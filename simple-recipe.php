@@ -4,13 +4,12 @@ Plugin Name: Simple Recipe
 Plugin URI: https://github.com/Protohominid/simple-recipe
 Description: Creates the "Recipe" post type and shortcode to insert into posts.
 Author: Shawn Beelman
-Version: 0.6.0
+Version: 0.6.1
 Author URI: http://www.sbgraphicdesign.com
 License: GPLv2
 Text Domain: simple-recipe
 */
 // text domain for I18n (should be same as plugin slug):
-$textdomain = 'simple-recipe';
 
 include_once( 'updater.php' );
 
@@ -34,19 +33,18 @@ if ( is_admin() ) {
 //Register Recipe Custom Post Type 
 add_action( 'init', 'create_simple_recipe_cpt' );
 function create_simple_recipe_cpt() {
-	global $textdomain;
 	$labels = array(
-		'name' => 				__( 'Recipes', $textdomain ),
-		'singular_name' =>		__( 'Recipe', $textdomain ),
-		'add_new' =>			__( 'Add New', $textdomain ),
-		'add_new_item' =>		__( 'Add New Recipe', $textdomain ),
-		'edit_item' =>			__( 'Edit Recipe', $textdomain ),
-		'new_item' =>			__( 'New Recipe', $textdomain ),
-		'all_items' =>			__( 'All Recipes', $textdomain ),
-		'view_item' =>			__( 'View Recipe', $textdomain ),
-		'search_items' =>		__( 'Search Recipes', $textdomain ),
-		'not_found' =>			__( 'No recipes found', $textdomain ),
-		'not_found_in_trash' => __( 'No recipes found in the Trash', $textdomain ), 
+		'name' => 				__( 'Recipes', 'simple-recipe' ),
+		'singular_name' =>		__( 'Recipe', 'simple-recipe' ),
+		'add_new' =>			__( 'Add New', 'simple-recipe' ),
+		'add_new_item' =>		__( 'Add New Recipe', 'simple-recipe' ),
+		'edit_item' =>			__( 'Edit Recipe', 'simple-recipe' ),
+		'new_item' =>			__( 'New Recipe', 'simple-recipe' ),
+		'all_items' =>			__( 'All Recipes', 'simple-recipe' ),
+		'view_item' =>			__( 'View Recipe', 'simple-recipe' ),
+		'search_items' =>		__( 'Search Recipes', 'simple-recipe' ),
+		'not_found' =>			__( 'No recipes found', 'simple-recipe' ),
+		'not_found_in_trash' => __( 'No recipes found in the Trash', 'simple-recipe' ), 
 	);
 	$args = array(
 		'labels' => $labels,
@@ -60,19 +58,19 @@ function create_simple_recipe_cpt() {
 
 //Custom messages
 function sr_updated_messages( $messages ) {
-	global $post, $post_ID, $textdomain;
+	global $post, $post_ID;
 	$messages['recipes'] = array(
 		0 => '', 
-		1 => sprintf( __( 'Recipe updated. <a href="%s">View recipe</a>', $textdomain ), esc_url( get_permalink($post_ID) ) ),
-		2 => __( 'Custom field updated.', $textdomain ),
-		3 => __( 'Custom field deleted.', $textdomain ),
-		4 => __( 'Recipe updated.', $textdomain ),
-		5 => isset($_GET['revision']) ? sprintf( __( 'Recipe restored to revision from %s', $textdomain ), wp_post_revision_title( (int) $_GET['revision'], false ) ) : false,
-		6 => sprintf( __( 'Recipe published. <a href="%s">View recipe</a>', $textdomain ), esc_url( get_permalink($post_ID) ) ),
-		7 => __( 'Recipe saved.', $textdomain ),
-		8 => sprintf( __( 'Recipe submitted. <a target="_blank" href="%s">Preview recipe</a>', $textdomain ), esc_url( add_query_arg( 'preview', 'true', get_permalink($post_ID) ) ) ),
-		9 => sprintf( __( 'Recipe scheduled for: <strong>%1$s</strong>. <a target="_blank" href="%2$s">Preview recipe</a>', $textdomain ), date_i18n( __( 'M j, Y @ G:i' ), strtotime( $post->post_date ) ), esc_url( get_permalink($post_ID) ) ),
-		10 => sprintf( __( 'Recipe draft updated. <a target="_blank" href="%s">Preview recipe</a>', $textdomain ), esc_url( add_query_arg( 'preview', 'true', get_permalink($post_ID) ) ) ),
+		1 => sprintf( __( 'Recipe updated. <a href="%s">View recipe</a>', 'simple-recipe' ), esc_url( get_permalink($post_ID) ) ),
+		2 => __( 'Custom field updated.', 'simple-recipe' ),
+		3 => __( 'Custom field deleted.', 'simple-recipe' ),
+		4 => __( 'Recipe updated.', 'simple-recipe' ),
+		5 => isset($_GET['revision']) ? sprintf( __( 'Recipe restored to revision from %s', 'simple-recipe' ), wp_post_revision_title( (int) $_GET['revision'], false ) ) : false,
+		6 => sprintf( __( 'Recipe published. <a href="%s">View recipe</a>', 'simple-recipe' ), esc_url( get_permalink($post_ID) ) ),
+		7 => __( 'Recipe saved.', 'simple-recipe' ),
+		8 => sprintf( __( 'Recipe submitted. <a target="_blank" href="%s">Preview recipe</a>', 'simple-recipe' ), esc_url( add_query_arg( 'preview', 'true', get_permalink($post_ID) ) ) ),
+		9 => sprintf( __( 'Recipe scheduled for: <strong>%1$s</strong>. <a target="_blank" href="%2$s">Preview recipe</a>', 'simple-recipe' ), date_i18n( __( 'M j, Y @ G:i' ), strtotime( $post->post_date ) ), esc_url( get_permalink($post_ID) ) ),
+		10 => sprintf( __( 'Recipe draft updated. <a target="_blank" href="%s">Preview recipe</a>', 'simple-recipe' ), esc_url( add_query_arg( 'preview', 'true', get_permalink($post_ID) ) ) ),
 	);
 	return $messages;
 }
@@ -82,19 +80,18 @@ add_filter( 'post_updated_messages', 'sr_updated_messages' );
 //Add Recipe Categories
 add_action( 'init', 'simple_recipe_taxonomies', 0 );
 function simple_recipe_taxonomies(){
-	global $textdomain;
 	$labels = array(
-		'name'              => _x( 'Recipe Categories', 'taxonomy general name', $textdomain ),
-		'singular_name'     => _x( 'Recipe Category', 'taxonomy singular name', $textdomain ),
-		'search_items'      => __( 'Search Recipe Categories', $textdomain ),
-		'all_items'         => __( 'All Recipe Categories', $textdomain ),
-		'parent_item'       => __( 'Parent Recipe Category', $textdomain ),
-		'parent_item_colon' => __( 'Parent Recipe Category:', $textdomain ),
-		'edit_item'         => __( 'Edit Recipe Category', $textdomain ), 
-		'update_item'       => __( 'Update Recipe Category', $textdomain ),
-		'add_new_item'      => __( 'Add New Recipe Category', $textdomain ),
-		'new_item_name'     => __( 'New Recipe Category', $textdomain ),
-		'menu_name'         => __( 'Recipe Categories', $textdomain )
+		'name'              => _x( 'Recipe Categories', 'taxonomy general name', 'simple-recipe' ),
+		'singular_name'     => _x( 'Recipe Category', 'taxonomy singular name', 'simple-recipe' ),
+		'search_items'      => __( 'Search Recipe Categories', 'simple-recipe' ),
+		'all_items'         => __( 'All Recipe Categories', 'simple-recipe' ),
+		'parent_item'       => __( 'Parent Recipe Category', 'simple-recipe' ),
+		'parent_item_colon' => __( 'Parent Recipe Category:', 'simple-recipe' ),
+		'edit_item'         => __( 'Edit Recipe Category', 'simple-recipe' ), 
+		'update_item'       => __( 'Update Recipe Category', 'simple-recipe' ),
+		'add_new_item'      => __( 'Add New Recipe Category', 'simple-recipe' ),
+		'new_item_name'     => __( 'New Recipe Category', 'simple-recipe' ),
+		'menu_name'         => __( 'Recipe Categories', 'simple-recipe' )
 	);
 	$args = array(
 		'hierarchical' => true,
@@ -108,37 +105,36 @@ function simple_recipe_taxonomies(){
 // Meta Boxes
 add_filter( 'cmb_meta_boxes', 'simple_recipe_metaboxes' );
 function simple_recipe_metaboxes( $meta_boxes ) {
-	global $textdomain;
 	$prefix = 'simple-recipe-'; // Prefix for all fields
 	$meta_boxes[] = array(
 		'id' => 'simple_recipe_metabox',
-		'title' => __( 'Recipe Details', $textdomain ),
+		'title' => __( 'Recipe Details', 'simple-recipe' ),
 		'pages' => array( 'recipes' ), // post type
 		'context' => 'normal',
 		'priority' => 'high',
 		'show_names' => true, // Show field names on the left
 		'fields' => array(
 			array(
-				'name' => __( 'Prep time', $textdomain ),
-				'desc' => __( 'Prep time in minutes (optional)', $textdomain ),
+				'name' => __( 'Prep time', 'simple-recipe' ),
+				'desc' => __( 'Prep time in minutes (optional)', 'simple-recipe' ),
 				'id' => $prefix . 'ptime',
 				'type' => 'text'
 			),
 			array(
-				'name' => __( 'Cook time', $textdomain ),
-				'desc' => __( 'Cook time in minutes (optional)', $textdomain ),
+				'name' => __( 'Cook time', 'simple-recipe' ),
+				'desc' => __( 'Cook time in minutes (optional)', 'simple-recipe' ),
 				'id' => $prefix . 'ctime',
 				'type' => 'text'
 			),
 			array(
-				'name' => __( 'Yield', $textdomain ),
-				'desc' => __( '(optional)', $textdomain ),
+				'name' => __( 'Yield', 'simple-recipe' ),
+				'desc' => __( '(optional)', 'simple-recipe' ),
 				'id' => $prefix . 'yield',
 				'type' => 'text'
 			),
 			array(
-				'name' => __( 'Ingredients', $textdomain ),
-				'desc' => __( 'Unordered list (ul)', $textdomain ),
+				'name' => __( 'Ingredients', 'simple-recipe' ),
+				'desc' => __( 'Unordered list (ul)', 'simple-recipe' ),
 				'id' => $prefix . 'ingredients',
 				'type' => 'wysiwyg',
 				'options' => array(
@@ -150,8 +146,8 @@ function simple_recipe_metaboxes( $meta_boxes ) {
 				)
 			),
 			array(
-				'name' => __( 'Instructions', $textdomain ),
-				'desc' => __( 'Ordered list (ol)', $textdomain ),
+				'name' => __( 'Instructions', 'simple-recipe' ),
+				'desc' => __( 'Ordered list (ol)', 'simple-recipe' ),
 				'id' => $prefix . 'instructions',
 				'type' => 'wysiwyg',
 				'options' => array(
@@ -163,8 +159,8 @@ function simple_recipe_metaboxes( $meta_boxes ) {
 				)
 			),
 			array(
-				'name' => __( 'Notes', $textdomain ),
-				'desc' => __( '(optional)', $textdomain ),
+				'name' => __( 'Notes', 'simple-recipe' ),
+				'desc' => __( '(optional)', 'simple-recipe' ),
 				'id' => $prefix . 'notes',
 				'type' => 'textarea'
 			),
@@ -187,7 +183,6 @@ function initialize_cmb_meta_boxes() {
 // The Recipe Shortcode
 add_shortcode( 'simple_recipe', 'simple_recipe_shortcode' );
 function simple_recipe_shortcode( $atts ) {
-	global $textdomain;
 	extract( shortcode_atts( array( 'title' => '', 'rid' => null, 'show_thumb' => false ), $atts ) );
 	
 	global $post;
@@ -238,30 +233,30 @@ function simple_recipe_shortcode( $atts ) {
 			$html .= '<span class="recipe-meta">';
 			
 			if ( !empty( $ptime ) ) {
-				$html .= '<p class="recipe-meta-item sr-preptime">' . __( 'Prep Time:', $textdomain ) . ' <meta itemprop="prepTime" content="PT' . $ptime . 'M">' . $ptime . ' minutes</p>';
+				$html .= '<p class="recipe-meta-item sr-preptime">' . __( 'Prep Time:', 'simple-recipe' ) . ' <meta itemprop="prepTime" content="PT' . $ptime . 'M">' . $ptime . ' minutes</p>';
 			}
 			if ( !empty ( $ctime ) ) {
-				$html .= '<p class="recipe-meta-item sr-cooktime">' . __( 'Cook Time:', $textdomain ) . ' <meta itemprop="cookTime" content="PT' . $ctime . 'M">' . $ctime . ' minutes</p>';
+				$html .= '<p class="recipe-meta-item sr-cooktime">' . __( 'Cook Time:', 'simple-recipe' ) . ' <meta itemprop="cookTime" content="PT' . $ctime . 'M">' . $ctime . ' minutes</p>';
 			}
 			if ( !empty ( $yield ) ) {
-				$html .= '<p class="recipe-meta-item sr-yield">' . __( 'Yield:', $textdomain ) . ' <span itemprop="recipeYield">' . $yield . '</span></p>';
+				$html .= '<p class="recipe-meta-item sr-yield">' . __( 'Yield:', 'simple-recipe' ) . ' <span itemprop="recipeYield">' . $yield . '</span></p>';
 			}
 			
 			$html .= '<button class="sr-print-recipe"><span>Print</span></button>';
 			$html .= '</span></header>';
 			$html .= '<div class="sr-content row">';
 			$html .= '<div class="sr-ingredients-wrap">';
-			$html .= '<h3>' . __( 'Ingredients', $textdomain ) . '</h3>';
+			$html .= '<h3>' . __( 'Ingredients', 'simple-recipe' ) . '</h3>';
 			$html .= '<div class="sr-ingredients">' . $ingredients . '</div>';
 			$html .= '</div>';
 			
 			$html .= '<div class="sr-instructions-wrap">';
-			$html .= '<h3>' . __( 'Instructions', $textdomain ) . '</h3>';
+			$html .= '<h3>' . __( 'Instructions', 'simple-recipe' ) . '</h3>';
 			$html .= '<div class="sr-instructions"><span itemprop="recipeInstructions">' . $instructions . '</span></div>';
 			$html .= '</div></div>';
 			
-			if ( !empty ( $notes ) ) $html .= '<h3>' . __( 'Notes', $textdomain ) . '</h3><div class="sr-notes">' . $notes . '</div>';
-			#if ( !empty ( $nutrition ) ) $html .= '<h3>' . __( 'Nutrition Facts', $textdomain ) . '</h3><div class="sr-nutrition-info" itemprop="nutrition" itemscope itemtype="http://schema.org/NutritionInformation">' . $nutrition . '</div>';
+			if ( !empty ( $notes ) ) $html .= '<h3>' . __( 'Notes', 'simple-recipe' ) . '</h3><div class="sr-notes">' . $notes . '</div>';
+			#if ( !empty ( $nutrition ) ) $html .= '<h3>' . __( 'Nutrition Facts', 'simple-recipe' ) . '</h3><div class="sr-nutrition-info" itemprop="nutrition" itemscope itemtype="http://schema.org/NutritionInformation">' . $nutrition . '</div>';
 			
 			$html .= '</div><!-- end .simple-recipe -->';
 
