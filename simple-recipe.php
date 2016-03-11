@@ -131,19 +131,19 @@ function simple_recipe_metaboxes( $meta_boxes ) {
 				'name' => __( 'Prep time', 'simple-recipe' ),
 				'desc' => __( 'Prep time in minutes (optional)', 'simple-recipe' ),
 				'id' => $prefix . 'ptime',
-				'type' => 'text'
+				'type' => 'text_small'
 			),
 			array(
 				'name' => __( 'Cook time', 'simple-recipe' ),
 				'desc' => __( 'Cook time in minutes (optional)', 'simple-recipe' ),
 				'id' => $prefix . 'ctime',
-				'type' => 'text'
+				'type' => 'text_small'
 			),
 			array(
 				'name' => __( 'Yield', 'simple-recipe' ),
 				'desc' => __( '(optional)', 'simple-recipe' ),
 				'id' => $prefix . 'yield',
-				'type' => 'text'
+				'type' => 'text_small'
 			),
 			array(
 				'name' => __( 'Ingredients', 'simple-recipe' ),
@@ -187,43 +187,43 @@ function simple_recipe_metaboxes( $meta_boxes ) {
 				'name' => __( 'Calories', 'simple-recipe' ),
 				'desc' => __( '(optional)', 'simple-recipe' ),
 				'id' => $prefix . 'calories',
-				'type' => 'text'
+				'type' => 'text_small'
 			),
 			array(
 				'name' => __( 'Total Fat', 'simple-recipe' ),
 				'desc' => __( 'in grams (optional)', 'simple-recipe' ),
 				'id' => $prefix . 'fat',
-				'type' => 'text'
+				'type' => 'text_small'
 			),
 			array(
 				'name' => __( 'Saturated Fat', 'simple-recipe' ),
 				'desc' => __( 'in grams (optional)', 'simple-recipe' ),
 				'id' => $prefix . 'satfat',
-				'type' => 'text'
+				'type' => 'text_small'
 			),
 			array(
 				'name' => __( 'Carbohydrates', 'simple-recipe' ),
 				'desc' => __( 'in grams (optional)', 'simple-recipe' ),
 				'id' => $prefix . 'carbs',
-				'type' => 'text'
+				'type' => 'text_small'
 			),
 			array(
 				'name' => __( 'Fiber', 'simple-recipe' ),
 				'desc' => __( 'in grams (optional)', 'simple-recipe' ),
 				'id' => $prefix . 'fiber',
-				'type' => 'text'
+				'type' => 'text_small'
 			),
 			array(
 				'name' => __( 'Sodium', 'simple-recipe' ),
 				'desc' => __( 'in milligrams (optional)', 'simple-recipe' ),
 				'id' => $prefix . 'sodium',
-				'type' => 'text'
+				'type' => 'text_small'
 			),
 			array(
 				'name' => __( 'Protein', 'simple-recipe' ),
 				'desc' => __( 'in grams (optional)', 'simple-recipe' ),
 				'id' => $prefix . 'protein',
-				'type' => 'text'
+				'type' => 'text_small'
 			),
 
 		),
