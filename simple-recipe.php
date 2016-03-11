@@ -1,10 +1,10 @@
-<?php 
+<?php
 /*
 Plugin Name: Simple Recipe
 Plugin URI: https://github.com/Protohominid/simple-recipe
 Description: Creates the "Recipe" post type and shortcode to insert into posts.
 Author: Shawn Beelman
-Version: 0.6.2
+Version: 0.7.0
 Author URI: http://www.sbgraphicdesign.com
 License: GPLv2
 Text Domain: simple-recipe
@@ -31,11 +31,11 @@ if ( is_admin() ) {
 }
 
 
-//Register Recipe Custom Post Type 
+//Register Recipe Custom Post Type
 function same_post_type_warning() {
 	echo '<div class="error">
 	<p><strong>' . __( 'Warning', 'translation-domain' ) . ':</strong> ' . __( 'A post type with the name "recipes" has already been registered by another plugin or theme. This will most probably cause conflicts.', 'simple-recipe' ) . '</p>
-	</div>';		
+	</div>';
 }
 
 function create_simple_recipe_cpt() {
@@ -50,7 +50,7 @@ function create_simple_recipe_cpt() {
 		'view_item' =>			__( 'View Recipe', 'simple-recipe' ),
 		'search_items' =>		__( 'Search Recipes', 'simple-recipe' ),
 		'not_found' =>			__( 'No recipes found', 'simple-recipe' ),
-		'not_found_in_trash' => __( 'No recipes found in the Trash', 'simple-recipe' ), 
+		'not_found_in_trash' => __( 'No recipes found in the Trash', 'simple-recipe' ),
 	);
 	$args = array(
 		'labels' => $labels,
@@ -73,7 +73,7 @@ endif;
 function sr_updated_messages( $messages ) {
 	global $post, $post_ID;
 	$messages['recipes'] = array(
-		0 => '', 
+		0 => '',
 		1 => sprintf( __( 'Recipe updated. <a href="%s">View recipe</a>', 'simple-recipe' ), esc_url( get_permalink($post_ID) ) ),
 		2 => __( 'Custom field updated.', 'simple-recipe' ),
 		3 => __( 'Custom field deleted.', 'simple-recipe' ),
@@ -100,7 +100,7 @@ function simple_recipe_taxonomies(){
 		'all_items'         => __( 'All Recipe Categories', 'simple-recipe' ),
 		'parent_item'       => __( 'Parent Recipe Category', 'simple-recipe' ),
 		'parent_item_colon' => __( 'Parent Recipe Category:', 'simple-recipe' ),
-		'edit_item'         => __( 'Edit Recipe Category', 'simple-recipe' ), 
+		'edit_item'         => __( 'Edit Recipe Category', 'simple-recipe' ),
 		'update_item'       => __( 'Update Recipe Category', 'simple-recipe' ),
 		'add_new_item'      => __( 'Add New Recipe Category', 'simple-recipe' ),
 		'new_item_name'     => __( 'New Recipe Category', 'simple-recipe' ),
@@ -177,6 +177,30 @@ function simple_recipe_metaboxes( $meta_boxes ) {
 				'id' => $prefix . 'notes',
 				'type' => 'textarea'
 			),
+			array(
+				'name' => __( 'Serving Size', 'simple-recipe' ),
+				'desc' => __( '(optional)', 'simple-recipe' ),
+				'id' => $prefix . 'servsize',
+				'type' => 'text'
+			),
+			array(
+				'name' => __( 'Calories', 'simple-recipe' ),
+				'desc' => __( '(optional)', 'simple-recipe' ),
+				'id' => $prefix . 'calories',
+				'type' => 'text'
+			),
+			array(
+				'name' => __( 'Fat', 'simple-recipe' ),
+				'desc' => __( 'in grams (optional)', 'simple-recipe' ),
+				'id' => $prefix . 'fat',
+				'type' => 'text'
+			),
+			array(
+				'name' => __( 'Fiber', 'simple-recipe' ),
+				'desc' => __( 'in grams(optional)', 'simple-recipe' ),
+				'id' => $prefix . 'fiber',
+				'type' => 'text'
+			),
 
 		),
 	);
@@ -197,10 +221,10 @@ function initialize_cmb_meta_boxes() {
 add_shortcode( 'simple_recipe', 'simple_recipe_shortcode' );
 function simple_recipe_shortcode( $atts ) {
 	extract( shortcode_atts( array( 'title' => '', 'rid' => null, 'show_thumb' => false ), $atts ) );
-	
+
 	global $post;
-	
-		
+
+
 	$args = array(
 		'post_type'		=>	'recipes',
 		'post_status'	=>	'publish',
@@ -211,29 +235,30 @@ function simple_recipe_shortcode( $atts ) {
 	else :
 		$args['name'] = $title;
 	endif;
-	
+
 	$recipes = new WP_Query( $args );
-	
+
 	$html = '';
-	
-	if ( $recipes->have_posts() ) : 
-	
+
+	if ( $recipes->have_posts() ) :
+
 		while ( $recipes->have_posts() ) :
 
 			$recipes->the_post();
-		
+
 			// Set up variables with content
 			$pid = get_the_ID();
 			$recipe_title = get_the_title();
 			$recipe_thumb = wp_get_attachment_image_src( get_post_thumbnail_id($pid), 'medium' );
-			$ingredients = get_post_meta( $pid, 'simple-recipe-ingredients', true );
+
+			$meta_list = array(	'ingredients', 'instructions', 'yield', 'ptime', 'ctime', 'notes', 'servsize', 'calories', 'fat', 'fiber' );
+			// loop through and create variables for each value
+			foreach( $meta_list as $value ) {
+				$$value = get_post_meta( $pid, 'simple-recipe-' . $value, true );
+			}
 			$ingredients = str_replace( array( '<li>', '</li>' ), array( '<li><span itemprop="ingredients">', '</span></li>' ), $ingredients);
-			$instructions = get_post_meta( $pid, 'simple-recipe-instructions', true );
-			$yield = get_post_meta( $pid, 'simple-recipe-yield', true );
-			$ptime = get_post_meta( $pid, 'simple-recipe-ptime', true );
-			$ctime = get_post_meta( $pid, 'simple-recipe-ctime', true );
-			$notes = get_post_meta( $pid, 'simple-recipe-notes', true );
-	 
+
+
 			// Build markup
 			$html  = '<meta property="og:site_name" content="' . get_bloginfo( 'name' ) . '" />';
 			$html .= '<div itemscope itemtype="http://schema.org/Recipe" class="simple-recipe">';
@@ -244,7 +269,7 @@ function simple_recipe_shortcode( $atts ) {
 			$html .= '<header class="row"><h2 itemprop="name" class="sr-title">' . $recipe_title . '</h2>';
 			$html .= '<p itemprop="author" class="sr-author">By ' . get_bloginfo( 'name' ) . '</p>';
 			$html .= '<span class="recipe-meta">';
-			
+
 			if ( !empty( $ptime ) ) {
 				$html .= '<p class="recipe-meta-item sr-preptime">' . __( 'Prep Time:', 'simple-recipe' ) . ' <meta itemprop="prepTime" content="PT' . $ptime . 'M">' . $ptime . ' minutes</p>';
 			}
@@ -254,7 +279,7 @@ function simple_recipe_shortcode( $atts ) {
 			if ( !empty ( $yield ) ) {
 				$html .= '<p class="recipe-meta-item sr-yield">' . __( 'Yield:', 'simple-recipe' ) . ' <span itemprop="recipeYield">' . $yield . '</span></p>';
 			}
-			
+
 			$html .= '<button class="sr-print-recipe"><span>Print</span></button>';
 			$html .= '</span></header>';
 			$html .= '<div class="sr-content row">';
@@ -262,34 +287,38 @@ function simple_recipe_shortcode( $atts ) {
 			$html .= '<h3>' . __( 'Ingredients', 'simple-recipe' ) . '</h3>';
 			$html .= '<div class="sr-ingredients">' . $ingredients . '</div>';
 			$html .= '</div>';
-			
+
 			$html .= '<div class="sr-instructions-wrap">';
 			$html .= '<h3>' . __( 'Instructions', 'simple-recipe' ) . '</h3>';
 			$html .= '<div class="sr-instructions"><span itemprop="recipeInstructions">' . $instructions . '</span></div>';
 			$html .= '</div></div>';
-			
+
 			if ( !empty ( $notes ) ) $html .= '<h3>' . __( 'Notes', 'simple-recipe' ) . '</h3><div class="sr-notes">' . $notes . '</div>';
-			#if ( !empty ( $nutrition ) ) $html .= '<h3>' . __( 'Nutrition Facts', 'simple-recipe' ) . '</h3><div class="sr-nutrition-info" itemprop="nutrition" itemscope itemtype="http://schema.org/NutritionInformation">' . $nutrition . '</div>';
-			
+			if ( $servsize != '' || $calories != '' || $fat != '' || $fiber != '' ) {
+				$html .= '<h3>' . __( 'Nutrition Information', 'simple-recipe' ) . '</h3><div class="sr-nutrition-info" itemprop="nutrition" itemscope itemtype="http://schema.org/NutritionInformation">';
+				if ( !empty( $servsize ) ) $html .= 'Serving Size: <span itemprop="servingSize">' . $servsize . '</span> ';
+				if ( !empty( $calories ) ) $html .= 'Calories: <span itemprop="calories">' . $calories . '</span> ';
+				if ( !empty( $fat ) ) $html .= 'Fat: <span itemprop="fatContent">' . $fat . ' g</span> ';
+				if ( !empty( $fiber ) ) $html .= 'Fiber: <span itemprop="fiberContent">' . $fiber . ' g</span> ';
+				$html .= '</div>';
+			}
+
 			$html .= '</div><!-- end .simple-recipe -->';
 
 		endwhile;
-		
+
 	else :
-	
+
 		return;
-		
+
 	endif;
-	
+
 	wp_reset_query();
-	
+
 	return $html;
 }
 
 /* schema todo
-<span itemprop="calories">240 calories</span>,
-<span itemprop="fatContent">9 grams fat</span>
-
 <span itemprop="description"></span>
 */
 
@@ -306,7 +335,7 @@ function sr_enqueue_scripts() {
 // Show the recipe on the single recipe page (e.g. site.com/recipes/recipename/)
 // this is needed for the microdata URL meta tag in the recipe shortcode
 add_filter( 'the_content', 'show_simple_recipe' );
-function show_simple_recipe( $content ) { 
+function show_simple_recipe( $content ) {
 
     if ( is_singular('recipes') ) {
         $content = do_shortcode( '[simple_recipe rid="' . get_the_id() . '"]' );
