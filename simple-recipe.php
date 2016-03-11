@@ -4,7 +4,7 @@ Plugin Name: Simple Recipe
 Plugin URI: https://github.com/Protohominid/simple-recipe
 Description: Creates the "Recipe" post type and shortcode to insert into posts.
 Author: Shawn Beelman
-Version: 0.7.0
+Version: 0.7.1
 Author URI: http://www.sbgraphicdesign.com
 License: GPLv2
 Text Domain: simple-recipe
@@ -190,15 +190,39 @@ function simple_recipe_metaboxes( $meta_boxes ) {
 				'type' => 'text'
 			),
 			array(
-				'name' => __( 'Fat', 'simple-recipe' ),
+				'name' => __( 'Total Fat', 'simple-recipe' ),
 				'desc' => __( 'in grams (optional)', 'simple-recipe' ),
 				'id' => $prefix . 'fat',
 				'type' => 'text'
 			),
 			array(
+				'name' => __( 'Saturated Fat', 'simple-recipe' ),
+				'desc' => __( 'in grams (optional)', 'simple-recipe' ),
+				'id' => $prefix . 'satfat',
+				'type' => 'text'
+			),
+			array(
+				'name' => __( 'Carbohydrates', 'simple-recipe' ),
+				'desc' => __( 'in grams (optional)', 'simple-recipe' ),
+				'id' => $prefix . 'carbs',
+				'type' => 'text'
+			),
+			array(
 				'name' => __( 'Fiber', 'simple-recipe' ),
-				'desc' => __( 'in grams(optional)', 'simple-recipe' ),
+				'desc' => __( 'in grams (optional)', 'simple-recipe' ),
 				'id' => $prefix . 'fiber',
+				'type' => 'text'
+			),
+			array(
+				'name' => __( 'Sodium', 'simple-recipe' ),
+				'desc' => __( 'in milligrams (optional)', 'simple-recipe' ),
+				'id' => $prefix . 'sodium',
+				'type' => 'text'
+			),
+			array(
+				'name' => __( 'Protein', 'simple-recipe' ),
+				'desc' => __( 'in grams (optional)', 'simple-recipe' ),
+				'id' => $prefix . 'protein',
 				'type' => 'text'
 			),
 
@@ -251,7 +275,7 @@ function simple_recipe_shortcode( $atts ) {
 			$recipe_title = get_the_title();
 			$recipe_thumb = wp_get_attachment_image_src( get_post_thumbnail_id($pid), 'medium' );
 
-			$meta_list = array(	'ingredients', 'instructions', 'yield', 'ptime', 'ctime', 'notes', 'servsize', 'calories', 'fat', 'fiber' );
+			$meta_list = array(	'ingredients', 'instructions', 'yield', 'ptime', 'ctime', 'notes', 'servsize', 'calories', 'fat', 'satfat', 'carbs', 'fiber', 'sodium', 'protein' );
 			// loop through and create variables for each value
 			foreach( $meta_list as $value ) {
 				$$value = get_post_meta( $pid, 'simple-recipe-' . $value, true );
@@ -294,12 +318,16 @@ function simple_recipe_shortcode( $atts ) {
 			$html .= '</div></div>';
 
 			if ( !empty ( $notes ) ) $html .= '<h3>' . __( 'Notes', 'simple-recipe' ) . '</h3><div class="sr-notes">' . $notes . '</div>';
-			if ( $servsize != '' || $calories != '' || $fat != '' || $fiber != '' ) {
+			if ( $servsize != '' || $calories != '' || $fat != '' || $satfat !='' || $fiber != '' || $sodium !='' ) {
 				$html .= '<h3>' . __( 'Nutrition Information', 'simple-recipe' ) . '</h3><div class="sr-nutrition-info" itemprop="nutrition" itemscope itemtype="http://schema.org/NutritionInformation">';
 				if ( !empty( $servsize ) ) $html .= 'Serving Size: <span itemprop="servingSize">' . $servsize . '</span> ';
 				if ( !empty( $calories ) ) $html .= 'Calories: <span itemprop="calories">' . $calories . '</span> ';
 				if ( !empty( $fat ) ) $html .= 'Fat: <span itemprop="fatContent">' . $fat . ' g</span> ';
+				if ( !empty( $satfat ) ) $html .= 'Saturated Fat: <span itemprop="saturatedFatContent">' . $satfat . ' g</span> ';
+				if ( !empty( $carbs ) ) $html .= 'Carbohydrates: <span itemprop="carbohydrateContent">' . $carbs . ' g</span> ';
 				if ( !empty( $fiber ) ) $html .= 'Fiber: <span itemprop="fiberContent">' . $fiber . ' g</span> ';
+				if ( !empty( $sodium ) ) $html .= 'Sodium: <span itemprop="sodiumContent">' . $sodium . ' mg</span> ';
+				if ( !empty( $protein ) ) $html .= 'Protein: <span itemprop="proteinContent">' . $protein . ' g</span> ';
 				$html .= '</div>';
 			}
 
