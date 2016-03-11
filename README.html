@@ -1,0 +1,47 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<meta charset="utf-8"/>
+</head>
+<body>
+<h2 id="simplerecipepluginforwordpress">Simple Recipe plugin for Wordpress</h2>
+
+<p>Existing recipe plugins were overkill for what I needed, so I created this. It&#8217;s meant more for theme developers than end users, because it doesn&#8217;t include any front-end CSS.</p>
+
+<p>Goals:</p>
+
+<ul>
+<li>Display the recipe with schema.org microdata</li>
+<li>Ability to include multiple recipes in post/page</li>
+<li>Control the location of the recipe within the content (which is why I&#8217;m using the shortcode method)</li>
+<li>Keep things simple, with no added CSS or JS to the front end</li>
+</ul>
+
+<p>The plugin adds a &#8220;Recipe&#8221; custom post type and the &#8220;simple_recipe&#8221; shortcode.</p>
+
+<p>The plugin outputs clean, unstyled, semantic HTML so it is up to the theme to create the look. I&#8217;ve added classes where appropriate to hook into for CSS.</p>
+
+<h3 id="shortcodeusagenotes">Shortcode usage notes</h3>
+
+<p>The shortcode has one required (&#8216;title&#8217;) and one optional (&#8216;show_thumb&#8217;, default is false) parameter right now, like so:</p>
+
+<pre><code>[simple_recipe title=&quot;coconut-cinnamon-crumble&quot; show_thumb=true]
+</code></pre>
+
+<h3 id="recipecptnotes">Recipe CPT notes</h3>
+
+<p>Recipe ingredients need to be entered as an unordered list.</p>
+
+<p>Recipe instructions should be entered as an ordered list.</p>
+
+<h4 id="todo:">To do:</h4>
+
+<ul>
+<li>I&#8217;d like to create an easy way to insert the shortcode with the slug automatically. For now you have to know the recipe&#8217;s slug and the shortcode format and type it in manually</li>
+<li>Field validation for inputs like &#8220;Prep Time&#8221;; these must be numeric input</li>
+</ul>
+
+<p>Thanks to jaredatch for the <a href="https://github.com/jaredatch/Custom-Metaboxes-and-Fields-for-WordPress">Custom Metaboxes code</a>.</p>
+
+</body>
+</html>

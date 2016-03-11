@@ -28,7 +28,6 @@ Recipe instructions should be entered as an ordered list.
 ####To do:
 
 - I'd like to create an easy way to insert the shortcode with the slug automatically. For now you have to know the recipe's slug and the shortcode format and type it in manually
-- More recipe details would also be good, like nutrition info
 - Field validation for inputs like "Prep Time"; these must be numeric input
 
 Thanks to jaredatch for the [Custom Metaboxes code](https://github.com/jaredatch/Custom-Metaboxes-and-Fields-for-WordPress).
