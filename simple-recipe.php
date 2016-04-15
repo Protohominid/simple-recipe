@@ -4,7 +4,7 @@ Plugin Name: Simple Recipe
 Plugin URI: https://github.com/Protohominid/simple-recipe
 Description: Creates the "Recipe" post type and shortcode to insert into posts.
 Author: Shawn Beelman
-Version: 0.7.2
+Version: 0.7.3
 Author URI: http://www.sbgraphicdesign.com
 License: GPLv2
 Text Domain: simple-recipe
