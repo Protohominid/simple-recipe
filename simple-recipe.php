@@ -292,7 +292,7 @@ function simple_recipe_shortcode( $atts ) {
 			$html .= '<meta itemprop="url" content="' . get_permalink($post->post_parent) . '" />';
 			$html .= '<header class="row"><h2 itemprop="name" class="sr-title">' . $recipe_title . '</h2>';
 			$html .= '<p itemprop="author" class="sr-author">By ' . get_bloginfo( 'name' ) . '</p>';
-			$html .= '<span class="recipe-meta">';
+			$html .= '<div class="recipe-meta">';
 
 			if ( !empty( $ptime ) ) {
 				$html .= '<p class="recipe-meta-item sr-preptime">' . __( 'Prep Time:', 'simple-recipe' ) . ' <meta itemprop="prepTime" content="PT' . $ptime . 'M">' . $ptime . ' minutes</p>';
@@ -305,7 +305,7 @@ function simple_recipe_shortcode( $atts ) {
 			}
 
 			$html .= '<button class="sr-print-recipe"><span>Print</span></button>';
-			$html .= '</span></header>';
+			$html .= '</div></header>';
 			$html .= '<div class="sr-content row">';
 			$html .= '<div class="sr-ingredients-wrap">';
 			$html .= '<h3>' . __( 'Ingredients', 'simple-recipe' ) . '</h3>';
