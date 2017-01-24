@@ -4,7 +4,7 @@ Plugin Name: Simple Recipe
 Plugin URI: https://github.com/Protohominid/simple-recipe
 Description: Creates the "Recipe" post type and shortcode to insert into posts.
 Author: Shawn Beelman
-Version: 0.8.0
+Version: 0.8.1
 Author URI: http://www.sbgraphicdesign.com
 License: GPLv2
 Text Domain: simple-recipe
@@ -245,18 +245,17 @@ function initialize_cmb_meta_boxes() {
 
 // The Recipe Shortcode
 function simple_recipe_shortcode( $atts ) {
-	extract( shortcode_atts( array( 'title' => '', 'rid' => null, 'show_thumb' => false ), $atts ) );
+	extract( shortcode_atts( array( 'title' => '', 'id' => null, 'show_thumb' => false ), $atts ) );
 
 	global $post;
-
 
 	$args = array(
 		'post_type'		=>	'recipes',
 		'post_status'	=>	'publish',
 		'numberposts'	=>	1
 	);
-	if ( !empty($rid) ) :
-		$args['p'] = $rid;
+	if ( !empty($id) ) :
+		$args['p'] = $id;
 	else :
 		$args['name'] = $title;
 	endif;
@@ -403,7 +402,7 @@ function simple_recipe_admin_footer_for_thickbox() {
 
                 var slug = jQuery('#simple-recipe-select-box option:selected').data('slug');
 
-                window.send_to_editor('[simple_recipe title="' + slug + '" id="' + id + '"]');
+                window.send_to_editor('[simple_recipe id="' + id + '" title="' + slug + '"]');
             }
 		</script>
 
