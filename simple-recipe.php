@@ -4,7 +4,7 @@ Plugin Name: Simple Recipe
 Plugin URI: https://github.com/Protohominid/simple-recipe
 Description: Creates the "Recipe" post type and shortcode to insert into posts.
 Author: Shawn Beelman
-Version: 0.7.5
+Version: 0.8.0
 Author URI: http://www.sbgraphicdesign.com
 License: GPLv2
 Text Domain: simple-recipe
@@ -30,6 +30,25 @@ if ( is_admin() ) {
 	new WP_GitHub_Updater( $config );
 }
 
+add_action( 'plugins_loaded', 'simple_recipe_setup' );
+function simple_recipe_setup() {
+	if ( post_type_exists( 'recipes' ) ) :
+		add_action( 'admin_notices', 'same_post_type_warning' );
+	else :
+		add_action( 'init', 'create_simple_recipe_cpt' );
+		add_action( 'init', 'simple_recipe_taxonomies', 0 );
+		add_filter( 'post_updated_messages', 'sr_updated_messages' );
+		add_filter( 'cmb_meta_boxes', 'simple_recipe_metaboxes' );
+		add_action( 'init', 'initialize_cmb_meta_boxes', 9999 );
+		add_shortcode( 'simple_recipe', 'simple_recipe_shortcode' );
+		add_action( 'wp_enqueue_scripts', 'sr_enqueue_scripts' );
+		add_filter( 'the_content', 'show_simple_recipe' );
+		if( is_admin() ) {
+			add_action( 'media_buttons', 'simple_recipe_media_button', 11 );
+			add_action( 'admin_footer', 'simple_recipe_admin_footer_for_thickbox' );
+		}
+	endif;
+}
 
 //Register Recipe Custom Post Type
 function same_post_type_warning() {
@@ -61,14 +80,6 @@ function create_simple_recipe_cpt() {
 	register_post_type( 'recipes', $args );
 }
 
-if ( post_type_exists( 'recipes' ) ) :
-	add_action( 'admin_notices', 'same_post_type_warning' );
-else :
-	add_action( 'init', 'create_simple_recipe_cpt' );
-endif;
-
-
-
 //Custom messages
 function sr_updated_messages( $messages ) {
 	global $post, $post_ID;
@@ -87,11 +98,8 @@ function sr_updated_messages( $messages ) {
 	);
 	return $messages;
 }
-add_filter( 'post_updated_messages', 'sr_updated_messages' );
-
 
 //Add Recipe Categories
-add_action( 'init', 'simple_recipe_taxonomies', 0 );
 function simple_recipe_taxonomies(){
 	$labels = array(
 		'name'              => _x( 'Recipe Categories', 'taxonomy general name', 'simple-recipe' ),
@@ -113,10 +121,7 @@ function simple_recipe_taxonomies(){
 	register_taxonomy( 'recipe-categories', 'recipes', $args );
 }
 
-
-
 // Meta Boxes
-add_filter( 'cmb_meta_boxes', 'simple_recipe_metaboxes' );
 function simple_recipe_metaboxes( $meta_boxes ) {
 	$prefix = 'simple-recipe-'; // Prefix for all fields
 	$meta_boxes[] = array(
@@ -232,17 +237,13 @@ function simple_recipe_metaboxes( $meta_boxes ) {
 }
 
 // Initialize the metabox class
-add_action( 'init', 'initialize_cmb_meta_boxes', 9999 );
 function initialize_cmb_meta_boxes() {
 	if ( !class_exists( 'cmb_Meta_Box' ) ) {
 		require_once( 'cmb/init.php' );
 	}
 }
 
-
-
 // The Recipe Shortcode
-add_shortcode( 'simple_recipe', 'simple_recipe_shortcode' );
 function simple_recipe_shortcode( $atts ) {
 	extract( shortcode_atts( array( 'title' => '', 'rid' => null, 'show_thumb' => false ), $atts ) );
 
@@ -350,7 +351,6 @@ function simple_recipe_shortcode( $atts ) {
 <span itemprop="description"></span>
 */
 
-add_action( 'wp_enqueue_scripts', 'sr_enqueue_scripts' );
 function sr_enqueue_scripts() {
 	global $post;
 	if( is_a( $post, 'WP_Post' ) && has_shortcode( $post->post_content, 'simple_recipe') ) {
@@ -359,10 +359,8 @@ function sr_enqueue_scripts() {
 	}
 }
 
-
 // Show the recipe on the single recipe page (e.g. site.com/recipes/recipename/)
 // this is needed for the microdata URL meta tag in the recipe shortcode
-add_filter( 'the_content', 'show_simple_recipe' );
 function show_simple_recipe( $content ) {
 
     if ( is_singular('recipes') ) {
@@ -370,6 +368,71 @@ function show_simple_recipe( $content ) {
 	}
 
     return $content;
+}
+
+// MEDIA BUTTON
+function simple_recipe_media_button()
+{
+	global $pagenow, $typenow, $wp_version;
+	$output = '';
+	if ( version_compare( $wp_version, '3.5', '>=' ) AND in_array( $pagenow, array( 'post.php', 'page.php', 'post-new.php', 'post-edit.php' ) ) && $typenow != 'recipes' )
+	{
+		#$img = '<style>#simple-recipe-media-button::before { font: 400 18px/1 dashicons; content: \'\f180\'; }</style><span class="wp-media-buttons-icon" id="simple-recipe-media-button"></span>';
+		$output = '<a href="#TB_inline?width=640&inlineId=add-simple-recipe" class="thickbox button simple-recipe-thickbox" title="' .  __( 'Add Recipe', 'simple-recipe'  ) . '" style="padding-left: .4em;"> ' . __( 'Add Recipe', 'simple-recipe'  ) . '</a>';
+	}
+	echo $output;
+}
+
+// MEDIA BUTTON FUNCTIONALITY
+function simple_recipe_admin_footer_for_thickbox() {
+	global $pagenow, $typenow, $wp_version;
+
+	// Only run in post/page creation and edit screens
+	if ( version_compare( $wp_version, '3.5', '>=' ) AND in_array( $pagenow, array( 'post.php', 'page.php', 'post-new.php', 'post-edit.php' ) ) && $typenow != 'recipes' ) { ?>
+
+		<script type="text/javascript">
+            function insertReusableTextBlock()
+            {
+            	var id = jQuery('#simple-recipe-select-box').val();
+                if ('' === id)
+                {
+                    alert('<?php _e( "You must choose a recipe", "simple-recipe" ); ?>');
+                    return;
+                }
+
+
+                var slug = jQuery('#simple-recipe-select-box option:selected').data('slug');
+
+                window.send_to_editor('[simple_recipe title="' + slug + '" id="' + id + '"]');
+            }
+		</script>
+
+		<div id="add-simple-recipe" style="display: none;">
+			<div class="wrap" style="font-family: 'Helvetica Neue', Helvetica, Arial, sans-serif;">
+				<?php
+
+				$blocks = get_posts( array( 'post_type' => 'recipes', 'numberposts' => -1, 'orderby' => 'date', 'order' => 'DESC' ) );
+
+				if( $blocks ) { ?>
+					<select id="simple-recipe-select-box" style="clear: both; display: block; margin-bottom: 1em;">
+						<option value=""><?php _e('Choose a Recipe', 'simple-recipe'); ?></option>
+						<?php
+							foreach ( $blocks as $block )
+							{
+								echo '<option value="' . $block->ID . '" data-slug="' . $block->post_name . '">' . $block->post_title . '</option>';
+							}
+						?>
+					</select>
+				<?php } else { echo __('No recipes have been created yet. Please create one first and then you will be able to select it here.', 'simple-recipe'); } ?>
+
+				<p class="submit">
+					<input type="button" id="simple-recipe-insert-download" class="button-primary" value="<?php echo __( 'Insert Recipe', 'simple-recipe' ); ?>" onclick="insertReusableTextBlock();" />
+					<a id="simple-recipe-cancel-add" class="button-secondary" onclick="tb_remove();" title="<?php _e( 'Cancel', 'simple-recipe' ); ?>"><?php _e( 'Cancel', 'simple-recipe' ); ?></a>
+				</p>
+			</div>
+		</div>
+	<?php
+	}
 }
 
 // eof
